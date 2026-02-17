@@ -1,0 +1,1 @@
+/home/gedeonkp/Tool/ToolRust/100-Project-of-Rust-Development/Temperature_converter/target/debug/Temperature_converter: /home/gedeonkp/Tool/ToolRust/100-Project-of-Rust-Development/Temperature_converter/src/main.rs
