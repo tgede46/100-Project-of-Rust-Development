@@ -54,19 +54,23 @@ fn load_tasks() -> Vec<Task>{
 }
 
 fn save_tasks(tasks: &Vec<Task>) {
-    let json = serde_json::to_string(tasks).expect("Failed to serialize tasks");
+    let json = serde_json::to_string_pretty(tasks).expect("Failed to serialize tasks");
     let mut file = File::create("tasks.json").expect("Failed to create file");
     file.write_all(json.as_bytes()).expect("Failed to write to file");
 }
 
 fn add_task(tasks: &mut Vec<Task>){
     let description = get_input("Enter task description: ");
-    let id = tasks.len() + 1;
-    let Task = Task {
+    // compute next id robustly (handles deletions)
+    let id = tasks.iter().map(|t| t.id).max().unwrap_or(0) + 1;
+    let task = Task {
         id,
         description: description.trim().to_string(),
         completed: false,
     };
+    tasks.push(task);
+    // persist immediately
+    save_tasks(tasks);
     println!("Task added successfully.");
 }
 
@@ -87,6 +91,7 @@ fn mark_task_completed(tasks: &mut Vec<Task>){
         if let Some(task) = tasks.iter_mut().find(|task| task.id == id){
             task.completed = true;
             println!("Task marked as completed.");
+            save_tasks(tasks);
         }else {
             println!("Task not found.");
         }
@@ -101,6 +106,7 @@ fn delete_task(tasks: &mut Vec<Task>){
         if let Some(pos) = tasks.iter().position(|task| task.id == id){
             tasks.remove(pos);
             println!("Task deleted successfully.");
+            save_tasks(tasks);
         }else {
             println!("Task not found.");
         }
