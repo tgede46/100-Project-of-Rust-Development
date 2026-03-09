@@ -61,7 +61,6 @@ fn save_tasks(tasks: &Vec<Task>) {
 
 fn add_task(tasks: &mut Vec<Task>){
     let description = get_input("Enter task description: ");
-    // compute next id robustly (handles deletions)
     let id = tasks.iter().map(|t| t.id).max().unwrap_or(0) + 1;
     let task = Task {
         id,
@@ -69,7 +68,6 @@ fn add_task(tasks: &mut Vec<Task>){
         completed: false,
     };
     tasks.push(task);
-    // persist immediately
     save_tasks(tasks);
     println!("Task added successfully.");
 }
